@@ -2,10 +2,13 @@ import AppLayout from "@/components/layout/AppLayout";
 import { categories, items } from "@/data/menu";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-
+import { Calendar } from "@/components/ui/calendar";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { format, addDays } from "date-fns";
 const Menu = () => {
   const [activeCat, setActiveCat] = useState(categories[0]?.id || "");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [date, setDate] = useState<Date>(new Date());
 
   const visible = useMemo(() => items.filter((i) => i.categoryId === activeCat), [activeCat]);
   const selectedList = useMemo(() => items.filter((i) => selected[i.id]), [selected]);
@@ -14,18 +17,28 @@ const Menu = () => {
     <AppLayout title="Today’s Menu • Cafeteria Admin" description="Plan and select items for today’s menu.">
       <div className="grid gap-6 lg:grid-cols-[260px_1fr_280px]">
         {/* Left categories */}
-        <aside className="space-y-2">
-          {categories.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setActiveCat(c.id)}
-              className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
-                activeCat === c.id ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
-              }`}
-            >
-              {c.name}
-            </button>
-          ))}
+        <aside className="space-y-3">
+          <div className="rounded-xl border p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <Button variant="secondary" size="sm" onClick={() => setDate((d) => addDays(d, -1))}>Prev</Button>
+              <div className="text-sm font-medium">{format(date, "PPP")}</div>
+              <Button variant="secondary" size="sm" onClick={() => setDate((d) => addDays(d, 1))}>Next</Button>
+            </div>
+            <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} className="p-3 pointer-events-auto" />
+          </div>
+          <div className="space-y-2">
+            {categories.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setActiveCat(c.id)}
+                className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
+                  activeCat === c.id ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
+                }`}
+              >
+                {c.name}
+              </button>
+            ))}
+          </div>
         </aside>
 
         {/* Center grid */}
@@ -61,26 +74,29 @@ const Menu = () => {
           </div>
         </section>
 
-        {/* Right selection summary */}
         <aside className="space-y-4">
-          <div className="rounded-xl border p-4">
-            <h2 className="mb-2 text-lg font-semibold">Menu 1</h2>
-            <ul className="space-y-2 text-sm">
-              {selectedList.length === 0 && (
-                <li className="text-muted-foreground">No items selected yet.</li>
-              )}
-              {selectedList.map((s) => (
-                <li key={s.id} className="flex items-center justify-between">
-                  <span>{s.name}</span>
-                  <span className="text-muted-foreground">₹{s.price}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 flex gap-2">
-              <Button className="flex-1">Set Menu</Button>
-              <Button variant="secondary" className="flex-1" onClick={() => setSelected({})}>Cancel</Button>
-            </div>
-          </div>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="menu-1">
+              <AccordionTrigger>Menu 1</AccordionTrigger>
+              <AccordionContent>
+                <ul className="space-y-2 text-sm">
+                  {selectedList.length === 0 && (
+                    <li className="text-muted-foreground">No items selected yet.</li>
+                  )}
+                  {selectedList.map((s) => (
+                    <li key={s.id} className="flex items-center justify-between">
+                      <span>{s.name}</span>
+                      <span className="text-muted-foreground">₹{s.price}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 flex gap-2">
+                  <Button className="flex-1">Set Menu</Button>
+                  <Button variant="secondary" className="flex-1" onClick={() => setSelected({})}>Cancel</Button>
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
           <Button variant="secondary" className="w-full">+ Menu 2</Button>
         </aside>
       </div>

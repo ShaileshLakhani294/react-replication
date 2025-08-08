@@ -29,7 +29,15 @@ const Items = () => {
                 activeCat === c.id ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
               }`}
             >
-              {c.name}
+              <div className="flex items-center gap-3">
+                <img
+                  src={baseItems.find((i) => i.categoryId === c.id)?.image || baseItems[0]?.image}
+                  alt={`${c.name} icon`}
+                  className="h-8 w-8 rounded object-cover"
+                  loading="lazy"
+                />
+                <span>{c.name}</span>
+              </div>
             </button>
           ))}
         </aside>
@@ -69,9 +77,9 @@ const Items = () => {
               <div className="space-y-2">
                 <Label>Available for</Label>
                 <div className="flex flex-wrap gap-4 text-sm">
-                  <label className="flex items-center gap-2"><Checkbox /> Jain</label>
-                  <label className="flex items-center gap-2"><Checkbox /> Regular</label>
-                  <label className="flex items-center gap-2"><Checkbox /> Swaminarayan</label>
+                  <label className="flex items-center gap-2"><Checkbox className="rounded-none" /> Jain</label>
+                  <label className="flex items-center gap-2"><Checkbox className="rounded-none" /> Regular</label>
+                  <label className="flex items-center gap-2"><Checkbox className="rounded-none" /> Swaminarayan</label>
                 </div>
               </div>
               <div className="space-y-2">

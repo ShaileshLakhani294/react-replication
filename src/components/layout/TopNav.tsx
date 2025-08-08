@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { Search, Bell } from "lucide-react";
+import { Search, Bell, ClipboardList, Utensils, SquarePen, History } from "lucide-react";
 
 const TopNav = () => {
   return (
@@ -20,7 +20,10 @@ const TopNav = () => {
                 }`
               }
             >
-              My Orders
+              <div className="flex items-center gap-2">
+                <ClipboardList className="h-4 w-4" />
+                <span>My Orders</span>
+              </div>
             </NavLink>
             <NavLink
               to="/menu"
@@ -30,7 +33,10 @@ const TopNav = () => {
                 }`
               }
             >
-              Today’s Menu
+              <div className="flex items-center gap-2">
+                <Utensils className="h-4 w-4" />
+                <span>Today’s Menu</span>
+              </div>
             </NavLink>
             <NavLink
               to="/items"
@@ -40,7 +46,10 @@ const TopNav = () => {
                 }`
               }
             >
-              Add/Edit Items
+              <div className="flex items-center gap-2">
+                <SquarePen className="h-4 w-4" />
+                <span>Add/Edit Items</span>
+              </div>
             </NavLink>
             <NavLink
               to="/history"
@@ -50,7 +59,10 @@ const TopNav = () => {
                 }`
               }
             >
-              Order History
+              <div className="flex items-center gap-2">
+                <History className="h-4 w-4" />
+                <span>Order History</span>
+              </div>
             </NavLink>
           </div>
         </div>
