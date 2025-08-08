@@ -1,13 +1,25 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import AppLayout from "@/components/layout/AppLayout";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <AppLayout title="Aaharam Admin • Cafeteria" description="Manage orders, daily menus, and items with a clean, responsive dashboard.">
+      <section className="mx-auto max-w-2xl text-center">
+        <h1 className="mb-4 text-4xl font-semibold">Cafeteria Admin</h1>
+        <p className="mb-8 text-muted-foreground">
+          Lightweight demo inspired by your screenshots. Explore Orders, Today’s Menu, and Add/Edit Items.
+        </p>
+        <div className="flex items-center justify-center gap-3">
+          <Button asChild>
+            <Link to="/login">Go to Login</Link>
+          </Button>
+          <Button variant="secondary" asChild>
+            <Link to="/orders">View Orders</Link>
+          </Button>
+        </div>
+      </section>
+    </AppLayout>
   );
 };
 
