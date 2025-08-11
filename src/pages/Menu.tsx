@@ -2,53 +2,55 @@ import AppLayout from "@/components/layout/AppLayout";
 import { categories, items } from "@/data/menu";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { format, addDays } from "date-fns";
+import { format, addDays, subDays } from "date-fns";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 const Menu = () => {
   const [activeCat, setActiveCat] = useState(categories[0]?.id || "");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [date, setDate] = useState<Date>(new Date());
+  
+  const nextDay = () => setDate(prev => addDays(prev, 1));
+  const prevDay = () => setDate(prev => subDays(prev, 1));
 
   const visible = useMemo(() => items.filter((i) => i.categoryId === activeCat), [activeCat]);
   const selectedList = useMemo(() => items.filter((i) => selected[i.id]), [selected]);
 
   return (
     <AppLayout title="Today’s Menu • Cafeteria Admin" description="Plan and select items for today’s menu.">
-      <div className="grid gap-6 lg:grid-cols-[260px_1fr_280px]">
-        {/* Left categories */}
-        <aside className="space-y-3">
-          <div className="rounded-xl border p-3">
-            <div className="mb-2 flex items-center justify-between">
-              <Button variant="secondary" size="sm" onClick={() => setDate((d) => addDays(d, -1))}>Prev</Button>
-              <div className="text-sm font-medium">{format(date, "PPP")}</div>
-              <Button variant="secondary" size="sm" onClick={() => setDate((d) => addDays(d, 1))}>Next</Button>
+      <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
+        {/* Main content */}
+        <section className="space-y-6">
+          {/* Date Navigation */}
+          <div className="flex items-center justify-center gap-4 rounded-xl border p-4">
+            <Button variant="outline" size="icon" onClick={prevDay}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <div className="text-center">
+              <h2 className="text-lg font-semibold">{format(date, 'EEEE')}</h2>
+              <p className="text-sm text-muted-foreground">{format(date, 'MMMM d, yyyy')}</p>
             </div>
-            <Calendar mode="single" selected={date} onSelect={(d) => d && setDate(d)} className="p-3 pointer-events-auto" />
+            <Button variant="outline" size="icon" onClick={nextDay}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
-          <div className="space-y-2">
-            {categories.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => setActiveCat(c.id)}
-                className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
-                  activeCat === c.id ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
-                }`}
+
+          {/* Categories - horizontal chips */}
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {categories.map((cat) => (
+              <Button
+                key={cat.id}
+                variant={activeCat === cat.id ? "default" : "outline"}
+                size="sm"
+                onClick={() => setActiveCat(cat.id)}
+                className="flex-shrink-0"
               >
-                {c.name}
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        {/* Center grid */}
-        <section>
-          <div className="mb-4 flex items-center gap-2 overflow-auto rounded-full border p-2 text-sm">
-            {Array.from({ length: 7 }).map((_, idx) => (
-              <div key={idx} className={`rounded-full px-4 py-1 ${idx === 3 ? "bg-secondary" : ""}`}>Mon {idx + 14}</div>
+                {cat.name}
+              </Button>
             ))}
           </div>
 
+          {/* Items Grid */}
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
             {visible.map((it) => {
               const isSel = !!selected[it.id];
@@ -74,6 +76,7 @@ const Menu = () => {
           </div>
         </section>
 
+        {/* Right sidebar with accordion menu */}
         <aside className="space-y-4">
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="menu-1">

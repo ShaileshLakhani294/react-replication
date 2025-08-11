@@ -21,25 +21,34 @@ const Items = () => {
       <div className="grid gap-6 lg:grid-cols-[260px_1fr_340px]">
         {/* Left category list */}
         <aside className="space-y-3">
-          {baseCategories.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setActiveCat(c.id)}
-              className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
-                activeCat === c.id ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <img
-                  src={baseItems.find((i) => i.categoryId === c.id)?.image || baseItems[0]?.image}
-                  alt={`${c.name} icon`}
-                  className="h-8 w-8 rounded object-cover"
-                  loading="lazy"
-                />
-                <span>{c.name}</span>
-              </div>
-            </button>
-          ))}
+          <h2 className="text-lg font-semibold">Categories</h2>
+          <div className="grid grid-cols-1 gap-3">
+            {baseCategories.map((cat) => {
+              const categoryItems = baseItems.filter((item) => item.categoryId === cat.id);
+              const firstItem = categoryItems[0];
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCat(cat.id)}
+                  className={`rounded-xl border p-3 text-left transition-colors ${
+                    activeCat === cat.id ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
+                  }`}
+                >
+                  {firstItem && (
+                    <div className="mb-2">
+                      <img 
+                        src={firstItem.image} 
+                        alt={cat.name}
+                        className="w-full h-20 object-cover rounded-lg"
+                      />
+                    </div>
+                  )}
+                  <div className="text-sm font-medium">{cat.name}</div>
+                  <div className="text-xs text-muted-foreground">{categoryItems.length} items</div>
+                </button>
+              );
+            })}
+          </div>
         </aside>
 
         {/* Middle items list */}
@@ -77,9 +86,9 @@ const Items = () => {
               <div className="space-y-2">
                 <Label>Available for</Label>
                 <div className="flex flex-wrap gap-4 text-sm">
-                  <label className="flex items-center gap-2"><Checkbox className="rounded-none" /> Jain</label>
-                  <label className="flex items-center gap-2"><Checkbox className="rounded-none" /> Regular</label>
-                  <label className="flex items-center gap-2"><Checkbox className="rounded-none" /> Swaminarayan</label>
+                  <label className="flex items-center gap-2"><Checkbox className="rounded-sm" /> Jain</label>
+                  <label className="flex items-center gap-2"><Checkbox className="rounded-sm" /> Regular</label>
+                  <label className="flex items-center gap-2"><Checkbox className="rounded-sm" /> Swaminarayan</label>
                 </div>
               </div>
               <div className="space-y-2">

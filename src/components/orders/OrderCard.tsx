@@ -38,8 +38,11 @@ export const OrderCard = ({ order }: { order: OrderData }) => {
   return (
     <article className="overflow-hidden rounded-xl border bg-card shadow-sm transition-all hover:shadow-md">
       {/* Colored header */}
-      <div className="flex items-center justify-between bg-secondary/40 px-4 py-3">
-        <h3 className="text-sm font-semibold">Order #{order.id}</h3>
+      <div className="flex items-center justify-between bg-accent px-4 py-3">
+        <div className="flex items-center gap-3">
+          <h3 className="text-sm font-semibold">Order #{order.id}</h3>
+          {statusBadge(order.status)}
+        </div>
         <div className="flex items-center gap-4 text-sm">
           <span className="text-muted-foreground">{order.time}</span>
           <span className="font-medium">₹{order.total}</span>
@@ -47,7 +50,6 @@ export const OrderCard = ({ order }: { order: OrderData }) => {
       </div>
 
       <div className="p-4">
-        <div className="mb-2">{order.status !== "pending" && statusBadge(order.status)}</div>
         <ul className="space-y-1 text-sm">
           {order.items.map((it, idx) => (
             <li key={idx} className="flex items-start justify-between">
@@ -64,11 +66,11 @@ export const OrderCard = ({ order }: { order: OrderData }) => {
 
         {order.status === "pending" && (
           <div className="mt-4 flex gap-2">
-            <Button variant="outline" className="flex-1">
+            <Button variant="outline" className="flex-1 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground">
               Reject
               <XCircle className="ml-2 h-4 w-4" />
             </Button>
-            <Button className="flex-1">
+            <Button className="flex-1 mr-0">
               Accept
               <CheckCircle2 className="ml-2 h-4 w-4" />
             </Button>

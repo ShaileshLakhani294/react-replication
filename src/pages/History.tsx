@@ -33,54 +33,56 @@ const History = () => {
 
   return (
     <AppLayout title="Order History • Cafeteria Admin" description="Browse completed, rejected, canceled and no show orders.">
-      <div className="grid gap-6 lg:grid-cols-[240px_1fr_360px]">
-        {/* Left filter with counts */}
-        <aside className="space-y-2">
-          {(["all","completed","noshow","rejected","canceled","pending"] as Status[]).map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilter(s)}
-              className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
-                filter === s ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
-              }`}
-            >
-              <span className="capitalize">{s}</span>
-              <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{counts[s] ?? 0}</span>
-            </button>
-          ))}
-        </aside>
+      <div className="space-y-6">
+        {/* Search bar */}
+        <div className="flex items-center gap-2">
+          <Input placeholder="Search by order id or item..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
 
-        {/* Center list with search */}
-        <section className="space-y-3">
-          <div className="flex items-center gap-2">
-            <Input placeholder="Search by order id or item..." value={search} onChange={(e) => setSearch(e.target.value)} />
-          </div>
+        <div className="grid gap-6 lg:grid-cols-[240px_1fr_360px]">
+          {/* Left filter with counts */}
+          <aside className="space-y-2">
+            {(["all","completed","noshow","rejected","canceled","pending"] as Status[]).map((s) => (
+              <button
+                key={s}
+                onClick={() => setFilter(s)}
+                className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm transition-colors ${
+                  filter === s ? "bg-secondary text-secondary-foreground" : "hover:bg-muted"
+                }`}
+              >
+                <span className="capitalize">{s}</span>
+                <span className="rounded-full bg-muted px-2 py-0.5 text-xs">{counts[s] ?? 0}</span>
+              </button>
+            ))}
+          </aside>
 
-          <div className="rounded-xl border">
-            <ul>
-              {list.map((o) => (
-                <li key={o.id}>
-                  <button
-                    onClick={() => setSelectedId(o.id)}
-                    className={`grid w-full grid-cols-[120px_1fr_100px] items-center gap-3 px-4 py-3 text-left transition-colors ${
-                      selected?.id === o.id ? "bg-secondary/60" : "hover:bg-muted"
-                    }`}
-                  >
-                    <span className="text-sm font-semibold">#{o.id}</span>
-                    <span className="text-sm text-muted-foreground">Today • {o.time}</span>
-                    <span className="text-sm font-medium justify-self-end">₹{o.total}</span>
-                  </button>
-                </li>
-              ))}
-              {list.length === 0 && (
-                <li className="px-4 py-6 text-center text-sm text-muted-foreground">No orders found.</li>
-              )}
-            </ul>
-          </div>
-        </section>
+          {/* Center list */}
+          <section className="space-y-3">
+            <div className="rounded-xl border">
+              <ul className="divide-y">
+                {list.map((o) => (
+                  <li key={o.id}>
+                    <button
+                      onClick={() => setSelectedId(o.id)}
+                      className={`grid w-full grid-cols-[120px_1fr_100px] items-center gap-3 px-4 py-4 text-left transition-colors ${
+                        selected?.id === o.id ? "bg-secondary/60" : "hover:bg-muted"
+                      }`}
+                    >
+                      <span className="text-sm font-semibold">#{o.id}</span>
+                      <span className="text-sm text-muted-foreground">Today • {o.time}</span>
+                      <span className="text-sm font-medium justify-self-end">₹{o.total}</span>
+                    </button>
+                  </li>
+                ))}
+                {list.length === 0 && (
+                  <li className="px-4 py-6 text-center text-sm text-muted-foreground">No orders found.</li>
+                )}
+              </ul>
+            </div>
+          </section>
 
-        {/* Right detail panel */}
-        <aside className="space-y-3">
+          {/* Right detail panel */}
+          <aside className="space-y-3">
           {selected ? (
             <div className="space-y-4 rounded-xl border p-4">
               <div className="flex items-start justify-between">
@@ -103,15 +105,25 @@ const History = () => {
               </div>
 
               <div>
-                <div className="mb-2 font-medium">Items</div>
-                <ul className="space-y-2 text-sm">
+                <div className="mb-3 font-medium">Items</div>
+                <div className="space-y-3">
                   {selected.items.map((it, i) => (
-                    <li key={i} className="flex items-center justify-between">
-                      <span>{it.name} × {it.qty}</span>
-                      <span className="text-muted-foreground">{it.modifiers?.join(", ")}</span>
-                    </li>
+                    <div key={i} className="rounded-lg border p-3 bg-muted/30">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+                          <span className="text-xs font-semibold">{it.name.charAt(0)}</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium">{it.name}</div>
+                          <div className="text-xs text-muted-foreground">Qty: {it.qty}</div>
+                          {it.modifiers?.length && (
+                            <div className="text-xs text-muted-foreground">{it.modifiers.join(", ")}</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
 
               <div className="border-t pt-3">
@@ -132,7 +144,8 @@ const History = () => {
           ) : (
             <div className="rounded-xl border p-4 text-sm text-muted-foreground">Select an order to see details.</div>
           )}
-        </aside>
+          </aside>
+        </div>
       </div>
     </AppLayout>
   );

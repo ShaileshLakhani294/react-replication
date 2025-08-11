@@ -4,13 +4,40 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate } from "react-router-dom";
-import chefIllustration from "@/assets/illustrations/chef.png";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import friesImg from "@/assets/food/fries.jpg";
-import bhelImg from "@/assets/food/bhel.jpg";
-import samosaImg from "@/assets/food/samosa.jpg";
+import aaharamLogo from "@/assets/logos/aaharam-logo.png";
+import tatvasoftLogo from "@/assets/logos/tatvasoft-logo.png";
+import slide1 from "@/assets/illustrations/slide1.png";
+import slide2 from "@/assets/illustrations/slide2.png";
+import slide3 from "@/assets/illustrations/slide3.png";
+import { useEffect, useState } from "react";
 const Login = () => {
   const navigate = useNavigate();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  const slides = [
+    {
+      title: "Fresh & Delicious",
+      illustration: slide1,
+      subtitle: "Quality food made with love"
+    },
+    {
+      title: "Healthy Options",
+      illustration: slide2,
+      subtitle: "Nutritious meals for everyone"
+    },
+    {
+      title: "Happy Community",
+      illustration: slide3,
+      subtitle: "Where great food brings people together"
+    }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -23,29 +50,40 @@ const Login = () => {
         <aside className="relative hidden bg-secondary md:block">
           <div className="absolute inset-0 rounded-br-[4rem] bg-secondary" />
           <div className="relative z-10 flex h-full flex-col items-center justify-center gap-6 p-10">
-            <Carousel className="w-full max-w-md" opts={{ loop: true }}>
-              <CarouselContent>
-                {[{img: friesImg, caption: "Crispy French Fries"}, {img: bhelImg, caption: "Fresh Bhel"}, {img: samosaImg, caption: "Hot Samosa"}].map((s, i) => (
-                  <CarouselItem key={i}>
-                    <div className="overflow-hidden rounded-2xl border bg-card/70 p-4 shadow">
-                      <img src={s.img} alt={s.caption} className="aspect-[4/3] w-full rounded-xl object-cover" loading="lazy" />
-                      <div className="mt-3 text-center text-sm font-medium">{s.caption}</div>
-                    </div>
-                  </CarouselItem>
+            <div className="w-full max-w-md space-y-6">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-primary mb-4">{slides[currentSlide].title}</h2>
+                <div className="flex justify-center mb-6">
+                  <img 
+                    src={slides[currentSlide].illustration} 
+                    alt={slides[currentSlide].title}
+                    className="w-64 h-64 object-contain"
+                  />
+                </div>
+                <p className="text-muted-foreground">{slides[currentSlide].subtitle}</p>
+              </div>
+              
+              <div className="flex justify-center gap-2">
+                {slides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-colors ${
+                      index === currentSlide ? 'bg-primary' : 'bg-muted'
+                    }`}
+                  />
                 ))}
-              </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
-            </Carousel>
+              </div>
+            </div>
           </div>
         </aside>
         <section className="flex items-center justify-center p-8 md:p-12">
           <div className="w-full max-w-md">
             <div className="mb-8 text-center">
               <div className="mb-4 flex items-center justify-center gap-3">
-                <div className="rounded-full border border-primary/40 px-3 py-1 text-sm font-semibold text-primary" aria-label="aaharam logo">aaharam</div>
+                <img src={aaharamLogo} alt="aaharam logo" className="h-8" />
                 <span className="text-muted-foreground">+</span>
-                <div className="rounded-md border bg-muted px-3 py-1 text-sm font-medium" aria-label="TatvaSoft logo">TatvaSoft</div>
+                <img src={tatvasoftLogo} alt="TatvaSoft logo" className="h-8" />
               </div>
               <div className="mx-auto mb-6 h-px w-4/5 bg-border" />
               <h2 className="text-3xl font-semibold">Login</h2>
@@ -66,7 +104,7 @@ const Login = () => {
                 <Input id="password" type="password" placeholder="Enter your password" required />
               </div>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2"><Checkbox id="remember" className="rounded-none" /><Label htmlFor="remember">Remember me</Label></div>
+                <div className="flex items-center gap-2"><Checkbox id="remember" className="rounded-sm" /><Label htmlFor="remember">Remember me</Label></div>
                 <a href="#" className="text-sm text-muted-foreground underline-offset-4 hover:underline">Forgot your password?</a>
               </div>
               <Button size="lg" className="w-full">Login</Button>
